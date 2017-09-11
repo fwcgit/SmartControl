@@ -1,0 +1,104 @@
+C51 COMPILER V9.56.0.0   DHT                                                               08/15/2017 23:08:50 PAGE 1   
+
+
+C51 COMPILER V9.56.0.0, COMPILATION OF MODULE DHT
+OBJECT MODULE PLACED IN .\Objects\DHT.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE DHT.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\DHT.l
+                    -st) TABS(2) OBJECT(.\Objects\DHT.obj)
+
+line level    source
+
+   1          #include "DHT.h"
+   2          #include <intrins.h>
+   3          #include "utils.h"
+   4          #include "config.h"
+   5          
+   6          sbit DIO = P4^4;
+   7          
+   8          void DHT_Start()
+   9          {
+  10   1      
+  11   1        DIO = 1;
+  12   1        Delay2us();
+  13   1        DIO = 0;
+  14   1        Delay20ms();
+  15   1        DIO = 1;
+  16   1        Delay40us();
+  17   1      
+  18   1      }
+  19          
+  20          unsigned char DHT_ReadChar()
+  21          {
+  22   1        unsigned char i,val;
+  23   1        unsigned char to;
+  24   1        val = 0;
+  25   1        for(i = 0 ;i < 8 ;i++)
+  26   1        {
+  27   2          to = 400;
+  28   2          while(!DIO && to--);
+  29   2          Delay60us();
+  30   2          val <<=1;
+  31   2          if(DIO == 1) ++val;
+  32   2          to = 400;
+  33   2          while(DIO && to--);
+  34   2        }
+  35   1        return val;
+  36   1      }
+  37          
+  38          void DHT_ReadData(void(*dht)(unsigned int temp,unsigned int hum))
+  39          {
+  40   1        unsigned char check,TH,TL,HH,HL;
+  41   1        unsigned int temp,hum;
+  42   1        
+  43   1        DHT_Start();
+  44   1        if(DIO == 0)
+  45   1        {
+  46   2          Delay80us();
+  47   2          if(DIO)
+  48   2          {
+  49   3            Delay80us();
+  50   3            HH = DHT_ReadChar();
+  51   3            HL = DHT_ReadChar();
+  52   3            
+  53   3            TH = DHT_ReadChar();
+  54   3            TL= DHT_ReadChar();
+C51 COMPILER V9.56.0.0   DHT                                                               08/15/2017 23:08:50 PAGE 2   
+
+  55   3          
+  56   3            check = DHT_ReadChar();
+  57   3            
+  58   3            Delay25ms();
+  59   3            
+  60   3            DIO = 1;
+  61   3          
+  62   3            if((HH+HL+TH+TL) == check)
+  63   3            {
+  64   4              
+  65   4                hum = HH;
+  66   4                hum <<= 8;
+  67   4                hum |= HL;
+  68   4              
+  69   4                temp = TH;
+  70   4                temp <<= 8;
+  71   4                temp |= TL;
+  72   4              
+  73   4                dht(temp,hum);
+  74   4            }
+  75   3          }
+  76   2        }
+  77   1      }
+  78          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    180    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      11
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

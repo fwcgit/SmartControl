@@ -1,0 +1,15 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\config.obj",
+".\Objects\utils.obj",
+".\Objects\Uart1.obj",
+".\Objects\Uart2.obj",
+".\Objects\Uart3.obj",
+".\Objects\UartData.obj",
+".\Objects\device.obj",
+".\Objects\adc.obj",
+".\Objects\DHT.obj",
+".\Objects\DS18B20.obj",
+".\Objects\pwm.obj" 
+TO ".\Objects\SmartControl" 
+PRINT(".\Listings\SmartControl.m51") RAMSIZE(256) 

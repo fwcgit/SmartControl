@@ -1,0 +1,85 @@
+C51 COMPILER V9.56.0.0   DEVICE                                                            08/15/2017 23:08:50 PAGE 1   
+
+
+C51 COMPILER V9.56.0.0, COMPILATION OF MODULE DEVICE
+OBJECT MODULE PLACED IN .\Objects\device.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE device.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\de
+                    -vice.lst) TABS(2) OBJECT(.\Objects\device.obj)
+
+line level    source
+
+   1          #include "utils.h"
+   2          #include "device.h"
+   3          
+   4          void change_power_type(unsigned char type)
+   5          {
+   6   1        if(type == 0)
+   7   1        {
+   8   2          K4 =1;
+   9   2          Delay1000ms();
+  10   2          K5 = 1;
+  11   2        }
+  12   1        else
+  13   1        {
+  14   2          K5 = 0;
+  15   2          Delay1000ms();
+  16   2          K4 =0;
+  17   2        }
+  18   1      }
+  19          void change_light_off_on(unsigned char off_on)
+  20          {
+  21   1        if(off_on == 0)
+  22   1        {
+  23   2          K3 = 1;
+  24   2        }
+  25   1        else
+  26   1        {
+  27   2          K3 = 0;
+  28   2        }
+  29   1      }
+  30          void change_socket_off_on(unsigned char off_on)
+  31          {
+  32   1        if(off_on == 0)
+  33   1        {
+  34   2          K2 = 1;
+  35   2        }
+  36   1        else
+  37   1        {
+  38   2          K2 = 0;
+  39   2        }
+  40   1      }
+  41          void change_air_fan_off_on(unsigned char off_on)
+  42          {
+  43   1        if(off_on == 0)
+  44   1        {
+  45   2          K1 = 1;
+  46   2        }
+  47   1        else
+  48   1        {
+  49   2          K1 = 0;
+  50   2        }
+  51   1      }
+  52          
+  53          void buzzer_hint()
+  54          {
+C51 COMPILER V9.56.0.0   DEVICE                                                            08/15/2017 23:08:50 PAGE 2   
+
+  55   1          buzzer = 1;
+  56   1          Delay20ms();
+  57   1          buzzer = 0;
+  58   1      }
+  59          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     54    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

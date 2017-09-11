@@ -1,0 +1,133 @@
+C51 COMPILER V9.56.0.0   UARTDATA                                                          08/15/2017 23:08:50 PAGE 1   
+
+
+C51 COMPILER V9.56.0.0, COMPILATION OF MODULE UARTDATA
+OBJECT MODULE PLACED IN .\Objects\UartData.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE UartData.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\
+                    -UartData.lst) TABS(2) OBJECT(.\Objects\UartData.obj)
+
+line level    source
+
+   1          #include "Uart.h"
+   2          #include "device.h"
+   3          #include "pwm.h"
+   4          
+   5          void handData()
+   6          {
+   7   1        parserData1();
+   8   1        parserData2();
+   9   1        parserData3();
+  10   1      }
+  11          
+  12          void opt(unsigned char *dat)
+  13          {
+  14   1          if(*dat == 0x3b)
+  15   1          {
+  16   2            
+  17   2            if(*(dat+1) == 0x4a)//继电器设备
+  18   2            {
+  19   3              
+  20   3              if(*(dat+2) == 0x53)//子设备
+  21   3              {
+  22   4                
+  23   4                if(*(dat+3)  == 0x01)//市电
+  24   4                {
+  25   5                  change_power_type(0);
+  26   5                  
+  27   5                }
+  28   4                else if(*(dat+3) == 0x02)//太阳能
+  29   4                {
+  30   5                  change_power_type(1);
+  31   5                }
+  32   4              }
+  33   3              else if(*(dat+2) == 0x54)
+  34   3              {
+  35   4                if(*(dat+3)  == 0x01)//灯开
+  36   4                {
+  37   5                  change_light_off_on(0);
+  38   5                }
+  39   4                else if(*(dat+3) == 0x02)//灯关
+  40   4                {
+  41   5                  change_light_off_on(1);
+  42   5                }
+  43   4              }
+  44   3              else if(*(dat+2) == 0x55)
+  45   3              {
+  46   4                if(*(dat+3)  == 0x01)//插座开
+  47   4                {
+  48   5                  change_socket_off_on(0);
+  49   5                }
+  50   4                else if(*(dat+3) == 0x02)//插座关
+  51   4                {
+  52   5                  change_socket_off_on(1);
+  53   5                }
+  54   4              }
+C51 COMPILER V9.56.0.0   UARTDATA                                                          08/15/2017 23:08:50 PAGE 2   
+
+  55   3              else if(*(dat+2) == 0x56)
+  56   3              {
+  57   4                if(*(dat+3)  == 0x01)//风扇开
+  58   4                {
+  59   5                  change_air_fan_off_on(0);
+  60   5                }
+  61   4                else if(*(dat+3) == 0x02)//风扇关
+  62   4                {
+  63   5                  change_air_fan_off_on(1);
+  64   5                }
+  65   4              }
+  66   3            }
+  67   2            else if(*(dat+1) == 0x5a)//板载风扇
+  68   2            {
+  69   3              if(*(dat+2) == 0x5b)
+  70   3              {
+  71   4                set_pwm_auto(0);
+  72   4                
+  73   4                pwm_start();
+  74   4                
+  75   4              }
+  76   3              else if(*(dat+2) == 0x5c)
+  77   3              {
+  78   4                set_pwm_auto(0);
+  79   4                
+  80   4                pwm_stop();
+  81   4              }
+  82   3              else if(*(dat+2) == 0x5d)
+  83   3              {
+  84   4                set_pwm_auto(0);
+  85   4                
+  86   4                pwm_adj_auto(*(dat+3));
+  87   4              }
+  88   3              else if(*(dat+2) == 0x5e)
+  89   3              {
+  90   4                set_pwm_auto(1);
+  91   4              }
+  92   3                
+  93   3            }
+  94   2            else if(*(dat+1) == 0xca)
+  95   2            {
+  96   3              //set_Time(dat);
+  97   3              
+  98   3            }
+  99   2            else if(*(dat+1) == 0xdd)
+ 100   2            {
+ 101   3              buzzer_hint();
+ 102   3              IAP_CONTR = 0x60;
+ 103   3            }
+ 104   2          }
+ 105   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    387    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+C51 COMPILER V9.56.0.0   UARTDATA                                                          08/15/2017 23:08:50 PAGE 3   
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
