@@ -21,13 +21,13 @@ void Uart3() interrupt 17 using 1
 			rx3Index = 0;
 		}
 		
-		if(rByte == 0x3b)
+		if(rByte == 0x3c)
 		{
 			rx3Index = 0;
 			isRec3 = 1;
 		}
 		
-		if(isRec3)
+		if(isRec3 && !isHand3)
 		{
 			rxBuff3[rx3Index++] = rByte;
 		}

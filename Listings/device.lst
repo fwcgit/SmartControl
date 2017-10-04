@@ -1,4 +1,4 @@
-C51 COMPILER V9.56.0.0   DEVICE                                                            08/15/2017 23:08:50 PAGE 1   
+C51 COMPILER V9.56.0.0   DEVICE                                                            10/04/2017 12:50:24 PAGE 1   
 
 
 C51 COMPILER V9.56.0.0, COMPILATION OF MODULE DEVICE
@@ -10,72 +10,94 @@ line level    source
 
    1          #include "utils.h"
    2          #include "device.h"
-   3          
-   4          void change_power_type(unsigned char type)
-   5          {
-   6   1        if(type == 0)
-   7   1        {
-   8   2          K4 =1;
-   9   2          Delay1000ms();
-  10   2          K5 = 1;
-  11   2        }
-  12   1        else
-  13   1        {
-  14   2          K5 = 0;
-  15   2          Delay1000ms();
-  16   2          K4 =0;
-  17   2        }
-  18   1      }
-  19          void change_light_off_on(unsigned char off_on)
-  20          {
-  21   1        if(off_on == 0)
-  22   1        {
-  23   2          K3 = 1;
-  24   2        }
-  25   1        else
-  26   1        {
-  27   2          K3 = 0;
-  28   2        }
-  29   1      }
-  30          void change_socket_off_on(unsigned char off_on)
-  31          {
-  32   1        if(off_on == 0)
-  33   1        {
-  34   2          K2 = 1;
-  35   2        }
-  36   1        else
-  37   1        {
-  38   2          K2 = 0;
-  39   2        }
-  40   1      }
-  41          void change_air_fan_off_on(unsigned char off_on)
-  42          {
-  43   1        if(off_on == 0)
-  44   1        {
-  45   2          K1 = 1;
-  46   2        }
-  47   1        else
-  48   1        {
-  49   2          K1 = 0;
-  50   2        }
-  51   1      }
-  52          
-  53          void buzzer_hint()
-  54          {
-C51 COMPILER V9.56.0.0   DEVICE                                                            08/15/2017 23:08:50 PAGE 2   
+   3          #include "Uart.h"
+   4          
+   5          void change_power_type(unsigned char type)
+   6          {
+   7   1        if(type == 0)
+   8   1        {
+   9   2          K4 =1;
+  10   2          Delay1000ms();
+  11   2          K5 = 1;
+  12   2        }
+  13   1        else
+  14   1        {
+  15   2          K5 = 0;
+  16   2          Delay1000ms();
+  17   2          K4 =0;
+  18   2        }
+  19   1      }
+  20          void change_light_off_on(unsigned char off_on)
+  21          {
+  22   1        if(off_on == 0)
+  23   1        {
+  24   2          K3 = 1;
+  25   2        }
+  26   1        else
+  27   1        {
+  28   2          K3 = 0;
+  29   2        }
+  30   1      }
+  31          void change_socket_off_on(unsigned char off_on)
+  32          {
+  33   1        if(off_on == 0)
+  34   1        {
+  35   2          K2 = 1;
+  36   2        }
+  37   1        else
+  38   1        {
+  39   2          K2 = 0;
+  40   2        }
+  41   1      }
+  42          void change_air_fan_off_on(unsigned char off_on)
+  43          {
+  44   1        if(off_on == 0)
+  45   1        {
+  46   2          K1 = 1;
+  47   2        }
+  48   1        else
+  49   1        {
+  50   2          K1 = 0;
+  51   2        }
+  52   1      }
+  53          
+  54          void d_fan_open(unsigned char off_on)
+C51 COMPILER V9.56.0.0   DEVICE                                                            10/04/2017 12:50:24 PAGE 2   
 
-  55   1          buzzer = 1;
-  56   1          Delay20ms();
-  57   1          buzzer = 0;
-  58   1      }
-  59          
+  55          {
+  56   1        pdata unsigned char dat[5];
+  57   1        dat[0] = 0x3C;
+  58   1        dat[1] = 0xA0;
+  59   1        dat[2] = off_on == 1? 0x01 : 0x02;
+  60   1        dat[3] = 0x02;
+  61   1        dat[4] = 0x0d;
+  62   1        sendStrlen3(dat,5);
+  63   1      }
+  64          void d_fan_head(unsigned char off_on)
+  65          {
+  66   1        pdata unsigned char dat[5];
+  67   1        dat[0] = 0x3C;
+  68   1        dat[1] = 0xA0;
+  69   1        dat[2] = off_on == 1? 0x01 : 0x02;
+  70   1        dat[3] = off_on == 1? 0x01 : 0x02;
+  71   1        dat[4] = 0x0d;
+  72   1        sendStrlen3(dat,5);
+  73   1      }
+  74          
+  75          void buzzer_hint()
+  76          {
+  77   1          buzzer = 1;
+  78   1          Delay20ms();
+  79   1          buzzer = 0;
+  80   1      }
+  81          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     54    ----
+   CODE SIZE        =    149    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
-   PDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----      10
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----

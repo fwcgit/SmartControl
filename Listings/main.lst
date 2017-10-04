@@ -1,4 +1,4 @@
-C51 COMPILER V9.56.0.0   MAIN                                                              08/15/2017 23:08:50 PAGE 1   
+C51 COMPILER V9.56.0.0   MAIN                                                              10/04/2017 12:50:23 PAGE 1   
 
 
 C51 COMPILER V9.56.0.0, COMPILATION OF MODULE MAIN
@@ -9,179 +9,203 @@ COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE 
 line level    source
 
    1          #include<reg52.h>
-   2          #include "config.h"
-   3          #include "utils.h"
-   4          #include "Uart.h"
-   5          #include "adc.h"
-   6          #include "DS18B20.h"
-   7          #include "DHT.h"
-   8          #include <math.h>
-   9          #include "pwm.h"
-  10          #include "device.h"
-  11          
-  12          void uploadingStatu();
-  13          uchar get_ntc_temp(uint ntc,uint ref);
-  14          void pwm_fank(uint adc_temp);
-  15          
-  16          sbit work_led = P2^5;
-  17          
-  18          uint timer0_count = 0;
-  19          uchar init_is_connect_server = 1;
-  20          
-  21          uint dht_humidity = 0;
-  22          uint dht_temp = 0;
-  23          
-  24          void DHT_Result(unsigned int temp,unsigned int hum)
-  25          {
-  26   1        dht_humidity = hum;
-  27   1        dht_temp = temp;
-  28   1      }
-  29          
-  30          void main(void)
-  31          {
-  32   1        buzzer = 0;
-  33   1        
-  34   1        init_io();
-  35   1        init_uart_io();
-  36   1        init_adc_io();
-  37   1        init_adc();
-  38   1        init_timer0();
-  39   1        
-  40   1        start_timer0();
-  41   1        
-  42   1        init_pwm();
-  43   1        
-  44   1        EA = 1;
-  45   1        
-  46   1        while(1)
-  47   1        {
-  48   2          
-  49   2          handData();
-  50   2          
-  51   2          if(timer0_count >= 300)//1√Î
-  52   2          {
-  53   3            timer0_count = 0;
-  54   3            work_led = !work_led;
-C51 COMPILER V9.56.0.0   MAIN                                                              08/15/2017 23:08:50 PAGE 2   
+   2          #include<stdio.h>
+   3          #include "config.h"
+   4          #include "utils.h"
+   5          #include "Uart.h"
+   6          #include "adc.h"
+   7          #include "DS18B20.h"
+   8          #include "DHT.h"
+   9          #include <math.h>
+  10          #include "pwm.h"
+  11          #include "device.h"
+  12          
+  13          void uploadingStatu();
+  14          uchar get_ntc_temp(uint ntc,uint ref);
+  15          void pwm_fank(uint adc_temp);
+  16          
+  17          sbit work_led = P2^5;
+  18          
+  19          uint timer0_count = 0;
+  20          uchar init_is_connect_server = 1;
+  21          
+  22          uint dht_humidity = 0;
+  23          uint dht_temp = 0;
+  24          uint toilet_room_temp = 0;
+  25          uint toilet_room_humidity = 0;
+  26          
+  27          pdata uchar buff[20];
+  28          
+  29          void DHT_Result(unsigned int temp,unsigned int hum)
+  30          {
+  31   1        dht_humidity = hum;
+  32   1        dht_temp = temp;
+  33   1      }
+  34          
+  35          void toilet_room_data(unsigned int temp,unsigned humidity)
+  36          {
+  37   1        toilet_room_temp = temp;
+  38   1        toilet_room_humidity = humidity;
+  39   1      }
+  40          
+  41          void main(void)
+  42          {
+  43   1        buzzer = 0;
+  44   1        
+  45   1        init_io();
+  46   1        init_uart_io();
+  47   1        init_adc_io();
+  48   1        init_adc();
+  49   1        init_timer0();
+  50   1        
+  51   1        start_timer0();
+  52   1        
+  53   1        init_pwm();
+  54   1        
+C51 COMPILER V9.56.0.0   MAIN                                                              10/04/2017 12:50:23 PAGE 2   
 
-  55   3            
-  56   3            uploadingStatu();
-  57   3          }
-  58   2          
-  59   2          if(timer0_count >= 5 && init_is_connect_server)
-  60   2          {
-  61   3              init_is_connect_server = 0;
-  62   3              connect_server();
-  63   3          }
-  64   2        }
-  65   1      }
-  66          
-  67          void uploadingStatu()
-  68          {
-  69   1        uint hall,battery,ntc,ref,ds_temp;
-  70   1        uchar datas[18];
-  71   1        
-  72   1        hall = 0;
-  73   1        battery = 0;
-  74   1        ntc = 0;
-  75   1        ref = 0;
-  76   1        
-  77   1        ref = get_adc_ref();
-  78   1        hall = get_adc_hall();
-  79   1        battery = get_adc_battery();
-  80   1        ntc = get_adc_ntc();
-  81   1        
-  82   1        ds_temp = getTemp();
-  83   1        
-  84   1        DHT_ReadData(&DHT_Result);
-  85   1        
-  86   1        datas[0] = 0x3A;
-  87   1        datas[1] = 0x53;
-  88   1        datas[2] = hall >> 8;
-  89   1        datas[3] = hall;
-  90   1        datas[4] = battery >> 8;
-  91   1        datas[5] = battery;
-  92   1        datas[6] = ntc >> 8;
-  93   1        datas[7] = ntc;
-  94   1        datas[8] = ref >> 8;
-  95   1        datas[9] = ref;
-  96   1        datas[10] = get_ntc_temp(ntc,ref);
-  97   1        datas[11] = ds_temp >> 8;
-  98   1        datas[12] = ds_temp;
-  99   1        datas[13] = dht_humidity >> 8;
- 100   1        datas[14] = dht_humidity;
- 101   1        datas[15] = dht_temp >> 8;
- 102   1        datas[16] = dht_temp;
- 103   1        datas[17] = 0x0D;
- 104   1      
- 105   1        sendStrlen3(datas,18);
- 106   1        
- 107   1        pwm_fank(ds_temp);
- 108   1      }
- 109          
- 110          void pwm_fank(uint adc_temp)
- 111          {
- 112   1        uchar flag = adc_temp &0xf800;
- 113   1        
- 114   1        uint temp = adc_temp * 0.0625;
- 115   1        
- 116   1        uint lv = 0;
-C51 COMPILER V9.56.0.0   MAIN                                                              08/15/2017 23:08:50 PAGE 3   
+  55   1        EA = 1;
+  56   1        
+  57   1        sendStr1("AT+CIPMUX=1\r\n");
+  58   1        Delay20ms();
+  59   1        sendStr1("AT+CIPSERVER=1\r\n");
+  60   1      
+  61   1        while(1)
+  62   1        {
+  63   2          
+  64   2          handData();
+  65   2          
+  66   2          if(timer0_count >= 300)//1√Î
+  67   2          {
+  68   3            timer0_count = 0;
+  69   3            work_led = !work_led;
+  70   3            
+  71   3            uploadingStatu();
+  72   3          }
+  73   2          
+  74   2          if(timer0_count >= 5 && init_is_connect_server)
+  75   2          {
+  76   3              init_is_connect_server = 0;
+  77   3              connect_server();
+  78   3          }
+  79   2        }
+  80   1      }
+  81          
+  82          void uploadingStatu()
+  83          {
+  84   1        uint hall,battery,ntc,ref,ds_temp;
+  85   1        uchar datas[22];
+  86   1      
+  87   1        hall = 0;
+  88   1        battery = 0;
+  89   1        ntc = 0;
+  90   1        ref = 0;
+  91   1        
+  92   1        ref = get_adc_ref();
+  93   1        hall = get_adc_hall();
+  94   1        battery = get_adc_battery();
+  95   1        ntc = get_adc_ntc();
+  96   1        
+  97   1        ds_temp = getTemp();
+  98   1        
+  99   1        DHT_ReadData(&DHT_Result);
+ 100   1        
+ 101   1        datas[0] = 0x3A;
+ 102   1        datas[1] = 0x53;
+ 103   1        datas[2] = hall >> 8;
+ 104   1        datas[3] = hall;
+ 105   1        datas[4] = battery >> 8;
+ 106   1        datas[5] = battery;
+ 107   1        datas[6] = ntc >> 8;
+ 108   1        datas[7] = ntc;
+ 109   1        datas[8] = ref >> 8;
+ 110   1        datas[9] = ref;
+ 111   1        datas[10] = get_ntc_temp(ntc,ref);
+ 112   1        datas[11] = ds_temp >> 8;
+ 113   1        datas[12] = ds_temp;
+ 114   1        datas[13] = dht_humidity >> 8;
+ 115   1        datas[14] = dht_humidity;
+ 116   1        datas[15] = dht_temp >> 8;
+C51 COMPILER V9.56.0.0   MAIN                                                              10/04/2017 12:50:23 PAGE 3   
 
- 117   1        
- 118   1        if(flag) temp = 0;
- 119   1        
- 120   1        if(temp > 0 && temp <= 10)
- 121   1        {
- 122   2            pwm_stop();
- 123   2        }
- 124   1        else 
- 125   1        {
- 126   2          
- 127   2          pwm_adj(temp - 10);
- 128   2        }
- 129   1      }
- 130          
+ 117   1        datas[16] = dht_temp;
+ 118   1        datas[17] = toilet_room_temp >> 8;
+ 119   1        datas[18] = toilet_room_temp;
+ 120   1        datas[19] = toilet_room_humidity >> 8;
+ 121   1        datas[20] = toilet_room_humidity;
+ 122   1        datas[21] = 0x0D;
+ 123   1      
+ 124   1        memset(buff,0,18);
+ 125   1        sprintf(buff,"AT+CIPSEND=%d,22\r\n",(unsigned int)0);
+ 126   1        sendStrlen1(buff,18);
+ 127   1        Delay20ms();
+ 128   1        sendStrlen1(datas,22);
+ 129   1        pwm_fank(ds_temp);
+ 130   1      }
  131          
- 132          
- 133          uchar get_ntc_temp(uint ntc,uint ref)
- 134          {
- 135   1        float temp;
- 136   1        float t2 ;
- 137   1        float ntc_r;
- 138   1        float t_25;
- 139   1        float ntc_ln;
- 140   1        float ln ;
- 141   1        float res_v;
- 142   1        
- 143   1        res_v = ntc * 248.0 / ref-5.0;
- 144   1        ntc_r = (5.0 - res_v/100.0) / (res_v/100.0/10.0);
- 145   1        
- 146   1        t_25 = log(10);
- 147   1        ntc_ln = log(ntc_r);
- 148   1        ln = t_25 - ntc_ln;
- 149   1        
- 150   1        ln = ln / 3950.0;
- 151   1        t2 = 1.0/298.15;
- 152   1        t2 = t2-ln;
- 153   1        temp = 1.0/t2;
- 154   1        temp = temp - 273.15;
- 155   1        
- 156   1        return (uchar)temp;
- 157   1      }
- 158          
- 159          void timer0_isr() interrupt 1 using 1
- 160          {
- 161   1        timer0_count++;
- 162   1      }
+ 132          void pwm_fank(uint adc_temp)
+ 133          {
+ 134   1        uchar flag = adc_temp &0xf800;
+ 135   1        
+ 136   1        uint temp = adc_temp * 0.0625;
+ 137   1        
+ 138   1        uint lv = 0;
+ 139   1        
+ 140   1        if(flag) temp = 0;
+ 141   1        
+ 142   1        if(temp > 0 && temp <= 10)
+ 143   1        {
+ 144   2            pwm_stop();
+ 145   2        }
+ 146   1        else 
+ 147   1        {
+ 148   2          
+ 149   2          pwm_adj(temp - 10);
+ 150   2        }
+ 151   1      }
+ 152          
+ 153          
+ 154          
+ 155          uchar get_ntc_temp(uint ntc,uint ref)
+ 156          {
+ 157   1        float temp;
+ 158   1        float t2 ;
+ 159   1        float ntc_r;
+ 160   1        float t_25;
+ 161   1        float ntc_ln;
+ 162   1        float ln ;
+ 163   1        float res_v;
+ 164   1        
+ 165   1        res_v = ntc * 248.0 / ref-5.0;
+ 166   1        ntc_r = (5.0 - res_v/100.0) / (res_v/100.0/10.0);
+ 167   1        
+ 168   1        t_25 = log(10);
+ 169   1        ntc_ln = log(ntc_r);
+ 170   1        ln = t_25 - ntc_ln;
+ 171   1        
+ 172   1        ln = ln / 3950.0;
+ 173   1        t2 = 1.0/298.15;
+ 174   1        t2 = t2-ln;
+ 175   1        temp = 1.0/t2;
+ 176   1        temp = temp - 273.15;
+ 177   1        
+ 178   1        return (uchar)temp;
+C51 COMPILER V9.56.0.0   MAIN                                                              10/04/2017 12:50:23 PAGE 4   
+
+ 179   1      }
+ 180          
+ 181          void timer0_isr() interrupt 1 using 1
+ 182          {
+ 183   1        timer0_count++;
+ 184   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    642    ----
-   CONSTANT SIZE    =   ----    ----
+   CODE SIZE        =    740    ----
+   CONSTANT SIZE    =     50    ----
    XDATA SIZE       =   ----    ----
-   PDATA SIZE       =   ----    ----
-   DATA SIZE        =      7      59
+   PDATA SIZE       =     20    ----
+   DATA SIZE        =     11      63
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

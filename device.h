@@ -12,5 +12,7 @@ extern void change_power_type(unsigned char type);
 extern void change_light_off_on(unsigned char off_on);
 extern void change_socket_off_on(unsigned char off_on);
 extern void change_air_fan_off_on(unsigned char off_on);
-void buzzer_hint();
+extern void buzzer_hint();
+extern void d_fan_open(unsigned char off_on);
+extern void d_fan_head(unsigned char off_on);
 #endif

@@ -14,6 +14,8 @@ void opt(unsigned char *dat)
 		if(*dat == 0x3b)
 		{
 			
+			buzzer_hint();
+			
 			if(*(dat+1) == 0x4a)//¼ÌµçÆ÷Éè±¸
 			{
 				
@@ -91,6 +93,33 @@ void opt(unsigned char *dat)
 				}
 					
 			}
+			else if(*(dat+1) == 0x6a)
+			{
+				if(*(dat+2) == 0x6b)
+				{
+					if(*(dat+3) == 0x01)
+					{
+						d_fan_open(1);
+					}
+					else
+					{
+						d_fan_open(2);
+					}
+				}
+				
+					if(*(dat+2) == 0x6c)
+				{
+					if(*(dat+3) == 0x01)
+					{
+						d_fan_head(1);
+					}
+					else
+					{
+						d_fan_head(2);
+					}
+				}
+				
+			}
 			else if(*(dat+1) == 0xca)
 			{
 				//set_Time(dat);
@@ -100,6 +129,16 @@ void opt(unsigned char *dat)
 			{
 				buzzer_hint();
 				IAP_CONTR = 0x60;
+			}
+		}
+		else if(*dat == 0x3c){
+			if(*(dat+1) == 0x1c)
+			{
+				unsigned int temp = *(dat+2);
+				unsigned int hum = *(dat+4);
+				temp = (temp << 8 | *(dat+3));
+				hum = (hum << 8 | *(dat+5));
+				toilet_room_data(temp,hum);
 			}
 		}
 }

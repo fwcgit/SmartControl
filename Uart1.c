@@ -30,7 +30,7 @@ void Uart1() interrupt 4 using 1
 			isRec1 = 1;
 		}
 		
-		if(isRec1)
+		if(isRec1 && !isHand)
 		{
 			buff1[rxIndex++] = rByte;
 		}

@@ -1,4 +1,5 @@
 #include<reg52.h>
+#include<stdio.h>
 #include "config.h"
 #include "utils.h"
 #include "Uart.h"
@@ -20,11 +21,21 @@ uchar init_is_connect_server = 1;
 
 uint dht_humidity = 0;
 uint dht_temp = 0;
+uint toilet_room_temp = 0;
+uint toilet_room_humidity = 0;
+
+pdata uchar buff[20];
 
 void DHT_Result(unsigned int temp,unsigned int hum)
 {
 	dht_humidity = hum;
 	dht_temp = temp;
+}
+
+void toilet_room_data(unsigned int temp,unsigned humidity)
+{
+	toilet_room_temp = temp;
+	toilet_room_humidity = humidity;
 }
 
 void main(void)
@@ -43,6 +54,10 @@ void main(void)
 	
 	EA = 1;
 	
+	sendStr1("AT+CIPMUX=1\r\n");
+	Delay20ms();
+	sendStr1("AT+CIPSERVER=1\r\n");
+
 	while(1)
 	{
 		
@@ -67,8 +82,8 @@ void main(void)
 void uploadingStatu()
 {
 	uint hall,battery,ntc,ref,ds_temp;
-	uchar datas[18];
-	
+	uchar datas[22];
+
 	hall = 0;
 	battery = 0;
 	ntc = 0;
@@ -100,10 +115,17 @@ void uploadingStatu()
 	datas[14] = dht_humidity;
 	datas[15] = dht_temp >> 8;
 	datas[16] = dht_temp;
-	datas[17] = 0x0D;
+	datas[17] = toilet_room_temp >> 8;
+	datas[18] = toilet_room_temp;
+	datas[19] = toilet_room_humidity >> 8;
+	datas[20] = toilet_room_humidity;
+	datas[21] = 0x0D;
 
-	sendStrlen3(datas,18);
-	
+	memset(buff,0,18);
+	sprintf(buff,"AT+CIPSEND=%d,22\r\n",(unsigned int)0);
+	sendStrlen1(buff,18);
+	Delay20ms();
+	sendStrlen1(datas,22);
 	pwm_fank(ds_temp);
 }
 

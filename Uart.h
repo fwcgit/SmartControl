@@ -56,6 +56,7 @@ extern void parserData2();
 extern void parserData3();
 
 extern void opt(unsigned char *dat);
+extern void toilet_room_data(unsigned int temp,unsigned humidity);
 
 extern void connect_server();
 

@@ -1,5 +1,6 @@
 #include "utils.h"
 #include "device.h"
+#include "Uart.h"
 
 void change_power_type(unsigned char type)
 {
@@ -48,6 +49,27 @@ void change_air_fan_off_on(unsigned char off_on)
 	{
 		K1 = 0;
 	}
+}
+
+void d_fan_open(unsigned char off_on)
+{
+	pdata unsigned char dat[5];
+	dat[0] = 0x3C;
+	dat[1] = 0xA0;
+	dat[2] = off_on == 1? 0x01 : 0x02;
+	dat[3] = 0x02;
+	dat[4] = 0x0d;
+	sendStrlen3(dat,5);
+}
+void d_fan_head(unsigned char off_on)
+{
+	pdata unsigned char dat[5];
+	dat[0] = 0x3C;
+	dat[1] = 0xA0;
+	dat[2] = off_on == 1? 0x01 : 0x02;
+	dat[3] = off_on == 1? 0x01 : 0x02;
+	dat[4] = 0x0d;
+	sendStrlen3(dat,5);
 }
 
 void buzzer_hint()

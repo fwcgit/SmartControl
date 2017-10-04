@@ -1,4 +1,4 @@
-C51 COMPILER V9.56.0.0   UART3                                                             08/15/2017 23:08:50 PAGE 1   
+C51 COMPILER V9.56.0.0   UART3                                                             10/04/2017 12:50:24 PAGE 1   
 
 
 C51 COMPILER V9.56.0.0, COMPILATION OF MODULE UART3
@@ -31,13 +31,13 @@ line level    source
   21   3            rx3Index = 0;
   22   3          }
   23   2          
-  24   2          if(rByte == 0x3b)
+  24   2          if(rByte == 0x3c)
   25   2          {
   26   3            rx3Index = 0;
   27   3            isRec3 = 1;
   28   3          }
   29   2          
-  30   2          if(isRec3)
+  30   2          if(isRec3 && !isHand3)
   31   2          {
   32   3            rxBuff3[rx3Index++] = rByte;
   33   3          }
@@ -62,7 +62,7 @@ line level    source
   52          void sendData3(char dat)
   53          {
   54   1        while(buy3);
-C51 COMPILER V9.56.0.0   UART3                                                             08/15/2017 23:08:50 PAGE 2   
+C51 COMPILER V9.56.0.0   UART3                                                             10/04/2017 12:50:24 PAGE 2   
 
   55   1        
   56   1        buy3 = 1;
@@ -99,7 +99,7 @@ line level    source
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    225    ----
+   CODE SIZE        =    229    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
