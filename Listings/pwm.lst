@@ -1,4 +1,4 @@
-C51 COMPILER V9.56.0.0   PWM                                                               10/04/2017 12:50:24 PAGE 1   
+C51 COMPILER V9.56.0.0   PWM                                                               10/07/2017 00:02:09 PAGE 1   
 
 
 C51 COMPILER V9.56.0.0, COMPILATION OF MODULE PWM
@@ -62,7 +62,7 @@ line level    source
   52   1        if(PWMCR == 0x00)
   53   1        {
   54   2          PWMCR = 0x02;
-C51 COMPILER V9.56.0.0   PWM                                                               10/04/2017 12:50:24 PAGE 2   
+C51 COMPILER V9.56.0.0   PWM                                                               10/07/2017 00:02:09 PAGE 2   
 
   55   2          PWMCR |= 0x40;
   56   2          PWMCR |= 0x80;

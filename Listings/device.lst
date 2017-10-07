@@ -1,4 +1,4 @@
-C51 COMPILER V9.56.0.0   DEVICE                                                            10/04/2017 12:50:24 PAGE 1   
+C51 COMPILER V9.56.0.0   DEVICE                                                            10/07/2017 00:02:08 PAGE 1   
 
 
 C51 COMPILER V9.56.0.0, COMPILATION OF MODULE DEVICE
@@ -62,7 +62,7 @@ line level    source
   52   1      }
   53          
   54          void d_fan_open(unsigned char off_on)
-C51 COMPILER V9.56.0.0   DEVICE                                                            10/04/2017 12:50:24 PAGE 2   
+C51 COMPILER V9.56.0.0   DEVICE                                                            10/07/2017 00:02:08 PAGE 2   
 
   55          {
   56   1        pdata unsigned char dat[5];
@@ -84,20 +84,31 @@ line level    source
   72   1        sendStrlen3(dat,5);
   73   1      }
   74          
-  75          void buzzer_hint()
+  75          void ir_cmd(unsigned char *olddat)
   76          {
-  77   1          buzzer = 1;
-  78   1          Delay20ms();
-  79   1          buzzer = 0;
-  80   1      }
-  81          
+  77   1        pdata unsigned char dat[5];
+  78   1        dat[0] = *olddat;
+  79   1        dat[1] = *(olddat+1);
+  80   1        dat[2] = *(olddat+2);
+  81   1        dat[3] = *(olddat+3);
+  82   1        dat[4] = 0x0d;
+  83   1        sendStrlen3(dat,5);
+  84   1      }
+  85          
+  86          void buzzer_hint()
+  87          {
+  88   1          buzzer = 1;
+  89   1          Delay20ms();
+  90   1          buzzer = 0;
+  91   1      }
+  92          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    149    ----
+   CODE SIZE        =    199    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
-   PDATA SIZE       =   ----      10
+   PDATA SIZE       =   ----      15
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----

@@ -72,6 +72,17 @@ void d_fan_head(unsigned char off_on)
 	sendStrlen3(dat,5);
 }
 
+void ir_cmd(unsigned char *olddat)
+{
+	pdata unsigned char dat[5];
+	dat[0] = *olddat;
+	dat[1] = *(olddat+1);
+	dat[2] = *(olddat+2);
+	dat[3] = *(olddat+3);
+	dat[4] = 0x0d;
+	sendStrlen3(dat,5);
+}
+
 void buzzer_hint()
 {
 		buzzer = 1;

@@ -120,6 +120,10 @@ void opt(unsigned char *dat)
 				}
 				
 			}
+			else if(*(dat+1) == 0xe0) //∫ÏÕ‚…Ë±∏
+			{
+				ir_cmd(dat);
+			}
 			else if(*(dat+1) == 0xca)
 			{
 				//set_Time(dat);

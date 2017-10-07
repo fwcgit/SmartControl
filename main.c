@@ -54,6 +54,8 @@ void main(void)
 	
 	EA = 1;
 	
+	sendStr1("ATE0\r\n");
+	Delay20ms();
 	sendStr1("AT+CIPMUX=1\r\n");
 	Delay20ms();
 	sendStr1("AT+CIPSERVER=1\r\n");
